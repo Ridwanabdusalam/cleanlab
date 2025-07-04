@@ -108,9 +108,35 @@ tests/
 
 ### Prerequisites
 - Python 3.10+
-- [Poetry](https://python-poetry.org/) (recommended) or pip
-- Docker and Docker Compose (for containerized deployment)
-- Gemini API key (or another supported provider)
+- pip (Python package manager)
+- [Gemini API Key](https://ai.google.dev/)
+
+### Environment Setup
+
+1. **Create a `.env` file**
+   Copy the example environment file and update it with your configuration:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit the `.env` file**
+   Open the `.env` file in your preferred text editor and update the following required variables:
+   - `GEMINI_API_KEY`: Your Gemini API key
+   - `SECRET_KEY`: A secure secret key for JWT token encryption
+
+   Example:
+   ```bash
+   GEMINI_API_KEY=your_actual_gemini_api_key_here
+   SECRET_KEY=generate_a_secure_random_string_here
+   ```
+
+3. **Optional Configuration**
+   Adjust other settings in the `.env` file as needed, such as:
+   - API host and port
+   - Logging level
+   - CORS settings
+   - Rate limiting
+   - Database connection (if applicable)
 
 ### Installation
 
