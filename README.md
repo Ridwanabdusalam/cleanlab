@@ -16,6 +16,51 @@
 
 A production-ready Python package and REST API for detecting unreliable outputs from Large Language Models (LLMs) with confidence intervals, model explainability, and custom scoring functions. The package provides both a Python API and a REST interface to evaluate the trustworthiness of LLM-generated answers through a comprehensive verification process.
 
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+pip install -e .
+```
+
+### Basic Usage
+
+```python
+from trustworthiness import TrustworthinessDetector
+
+# Initialize the detector
+detector = TrustworthinessDetector()
+
+# Evaluate a single Q&A pair
+question = "What is the capital of France?"
+answer = "Paris"
+score = detector.evaluate(question, answer)
+print(f"Trust score: {score:.2f}")
+```
+
+### Running the Example
+
+Check out the complete example in [examples/usage_example.py](examples/usage_example.py) which demonstrates:
+- Basic usage
+- Batch evaluation
+- Custom scoring functions
+- Error handling
+- Real-world integration
+
+To run the example:
+
+```bash
+python examples/usage_example.py
+```
+
+## 📖 Documentation
+
+For detailed documentation including API reference, advanced usage, and customization options, see:
+- [Full Documentation](https://trustworthiness-detector.readthedocs.io/)
+- [Example Implementation](examples/usage_example.py)
+- [API Reference](docs/api.md)
+
 ## 🌟 Key Features
 
 ### Core Functionality
