@@ -1,4 +1,29 @@
-# My Development Journey: Building a Trustworthiness Detector
+# Trustworthiness Detector: Implementation & Usage Guide
+
+## Example Usage
+
+Before diving into the implementation details, here's a quick example of how to use the library:
+
+```python
+from trustworthiness import TrustworthinessDetector
+
+# Initialize with default settings
+detector = TrustworthinessDetector()
+
+# Evaluate a single Q&A pair
+question = "What is the capital of France?"
+answer = "Paris"
+score = detector.evaluate(question, answer)
+print(f"Trust score: {score:.2f}")
+```
+
+For a more comprehensive example, see [examples/usage_example.py](examples/usage_example.py) which demonstrates:
+- Batch processing of multiple Q&A pairs
+- Custom scoring functions
+- Error handling and edge cases
+- Real-world integration patterns
+
+## Development Journey
 
 ## Overview
 
@@ -8,14 +33,14 @@ I implemented a Python library that detects unreliable LLM outputs using the sel
 
 **Total time: ~5 hours**
 
-- **Research & Understanding (1 hour)**
+- **Research & Understanding**
   - Read and analyzed the BSDetector paper (Section 3.2) in detail
   - Studied the prompt templates in Figure 6b and their variations
   - Tested chat.cleanlab.ai to understand expected behavior and edge cases
   - Reviewed litellm documentation for model integration and best practices
   - Researched similar implementations and existing solutions
 
-- **Design & Implementation (2 hours)**
+- **Design & Implementation**
   - Designed clean, extensible API with multiple entry points
   - Implemented core `TrustworthinessDetector` class with comprehensive error handling
   - Developed robust response parsing with regex and fallback mechanisms
@@ -24,14 +49,14 @@ I implemented a Python library that detects unreliable LLM outputs using the sel
   - Added support for custom configuration and model parameters
   - Integrated with FastAPI for REST API endpoint
 
-- **Testing & Validation (1 hour)**
+- **Testing & Validation**
   - Created comprehensive test suite with unit and integration tests
   - Tested with various edge cases and input formats
   - Verified scoring behavior across different types of answers
   - Implemented test fixtures and mocks for reliable testing
   - Validated performance with different model providers
 
-- **Documentation & Polish (1 hour)**
+- **Documentation & Polish**
   - Wrote detailed README with installation and usage instructions
   - Added comprehensive API documentation with examples
   - Created developer documentation and contribution guidelines
@@ -39,7 +64,40 @@ I implemented a Python library that detects unreliable LLM outputs using the sel
   - Added type hints and docstrings throughout the codebase
   - Performed final code review and optimizations
 
-## My Development Toolkit
+## Example Walkthrough
+
+Let's walk through a more complex example showing how to use the library in a real-world scenario:
+
+```python
+from trustworthiness import TrustworthinessDetector, BatchEvaluationRequest
+
+# Initialize with custom settings
+detector = TrustworthinessDetector(
+    temperature=0.0,  # More deterministic responses
+    max_retries=3,    # Retry failed requests
+    cache_responses=True  # Cache API responses
+)
+
+# Prepare batch evaluation
+requests = [
+    {"question": "What is 1 + 1?", "answer": "2"},
+    {"question": "What is the capital of France?", "answer": "Paris"},
+    {"question": "How many planets are in our solar system?", "answer": "Eight"}
+]
+
+# Evaluate batch
+results = detector.evaluate_batch(requests)
+
+# Process results
+for result in results:
+    status = "✅" if result.trust_score.score >= 0.7 else "❌"
+    print(f"{status} Q: {result.question}")
+    print(f"   A: {result.answer}")
+    print(f"   Score: {result.trust_score.score:.2f}")
+    print(f"   Confidence: {result.trust_score.explanation.confidence:.0%}")
+```
+
+## Development Toolkit
 
 ### Tools That Made My Life Easier
 - **VS Code**: My trusty code editor with Python and Docker extensions that I use for everything
