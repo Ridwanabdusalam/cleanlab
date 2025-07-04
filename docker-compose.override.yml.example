@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: development
+    environment:
+      - ENV=development
+      - DEBUG=true
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - ALLOWED_ORIGINS='["*"]'
+      - ENABLE_REQUEST_SIGNING=false
+      - ENABLE_RATE_LIMITING=true
+      - ENABLE_AUDIT_LOGGING=true
+      - AUDIT_LOG_PATH=/app/logs/audit.log
+      - PYTHONPATH=/app/src
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    command: uvicorn trustworthiness.api:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  prometheus:
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: always
+
+  grafana:
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    restart: always
+
+volumes:
+  redis_data:
+  prometheus_data:
+  grafana_data:

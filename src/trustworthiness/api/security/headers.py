@@ -1,0 +1,31 @@
+"""
+Security headers middleware for the API.
+"""
+from fastapi import Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+
+
+def setup_security_headers(app):
+    """
+    Set up security headers for the application.
+    
+    Args:
+        app: FastAPI application instance
+    """
+    # Add security headers middleware
+    @app.middleware("http")
+    async def add_security_headers(request: Request, call_next):
+        response = await call_next(request)
+        
+        # Security headers
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Content-Security-Policy"] = "default-src 'self'"
+        
+        # HSTS (only in production)
+        if app.state.settings.ENV == "production":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        
+        return response

@@ -1,0 +1,55 @@
+# Include all documentation files
+include README.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include LICENSE
+
+# Include configuration files
+include pyproject.toml
+include setup.py
+include setup.cfg
+include .editorconfig
+include .pre-commit-config.yaml
+include .gitignore
+
+# Include environment files
+include .env.example
+
+# Include Python package data
+recursive-include src/trustworthiness/prompts *.txt
+recursive-include src/trustworthiness/*.py *.pyi
+include src/trustworthiness/py.typed
+
+# Include test files
+recursive-include tests *
+
+# Include documentation files
+recursive-include docs *
+
+# Include type stubs
+recursive-include src/trustworthiness/*.pyi
+
+# Include package data
+recursive-include src/trustworthiness/data *
+
+# Include any other necessary files
+include requirements*.txt
+include pytest.ini
+include mypy.ini
+include .coveragerc
+
+# Exclude build and distribution directories
+exclude .github/workflows/*.yaml
+prune build
+prune dist
+prune .pytest_cache
+prune .mypy_cache
+prune .coverage
+prune .eggs
+prune .tox
+prune .venv
+prune venv
+prune env
+prune .idea
+prune .vscode
